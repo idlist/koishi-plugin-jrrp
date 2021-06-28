@@ -62,7 +62,7 @@ module.exports.apply = (ctx, config) => {
       if (!name) name = session.author.username
 
       let luck = createHash('sha256')
-      luck.update(name)
+      luck.update(session.userId)
       luck.update((new Date().getTime() / (1000 * 60 * 60 * 24)).toFixed(0))
       luck.update('42')
 
