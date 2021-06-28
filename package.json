@@ -1,0 +1,25 @@
+{
+  "name": "koishi-plugin-jrrp",
+  "version": "0.1.0",
+  "description": "jrrp for Koishi.js.",
+  "author": "i'DLisT",
+  "license": "MIT",
+  "scripts": {
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/idlist/koishi-plugin-jrrp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/idlist/koishi-plugin-jrrp/issues"
+  },
+  "homepage": "https://github.com/idlist/koishi-plugin-jrrp#readme",
+  "main": "index.js",
+  "keywords": [
+    "koishi.js"
+  ],
+  "peerDependencies": {
+    "koishi-core": ">=3"
+  }
+}
