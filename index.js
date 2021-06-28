@@ -58,8 +58,8 @@ module.exports.apply = (ctx, config) => {
     .action(({ session }) => {
       let name
       if (config.useDatabase) name = session.user.name
-      if (!name) name = session.sender.nickname
-      if (!name) name = session.sender.username
+      if (!name) name = session.author.nickname
+      if (!name) name = session.author.username
 
       let luck = createHash('sha256')
       luck.update(name)
