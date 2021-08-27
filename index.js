@@ -1,5 +1,5 @@
 const { createHash } = require('crypto')
-const { t } = require('koishi-core')
+const { t } = require('koishi')
 
 class Config {
   constructor(config) {
@@ -14,6 +14,10 @@ class Config {
 
 module.exports.name = 'jrrp'
 
+/**
+ * @param {import('koishi').Context} ctx
+ * @param {import('./index').ConfigObject} config
+ */
 module.exports.apply = (ctx, config) => {
   t.set('jrrp.description', '今日人品')
   config = new Config(config)
