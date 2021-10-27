@@ -2,33 +2,27 @@ import { Context } from 'koishi'
 
 export interface ConfigObject {
   /**
-   * Whether to use the database.
+   * 是否使用数据库。数据库仅用来获取储存在其中的昵称。
    *
-   * Database is only used to read the nickname saved in the database.
-   *
-   * When there is no database, this item is forced to be `false`.
+   * 当没有数据库时，此项将被强制设为 `false`。
    *
    * @default true
    */
   useDatabase?: boolean
   /**
-   * The custom result message.
-   *
-   * When not set (`undefined`), the default result template is used.
+   * 自定义结果语句。详情请查看 https://github.com/idlist/koishi-plugin-jrrp 。
    *
    * @default undefined
    */
   result?: string
   /**
-   * Whether to give a simple comment on the result.
+   * 是否启用对结果的评价。
    *
    * @default true
    */
   levels?: boolean
   /**
-   * The custom comments used to comment on the result.
-   *
-   * When not set, (`undefined`), the default judging template is used.
+   * 自定义评价语句。详情请查看 https://github.com/idlist/koishi-plugin-jrrp 。
    *
    * @default undefined
    */
