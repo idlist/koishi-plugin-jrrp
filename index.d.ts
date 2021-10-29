@@ -29,4 +29,4 @@ export interface ConfigObject {
   levelDescriptions?: Record<number | string, string>
 }
 
-export const apply: (ctx: Context, config: ConfigObject) => void
+export declare const apply: (ctx: Context, config: ConfigObject) => void
