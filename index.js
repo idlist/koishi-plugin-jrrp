@@ -21,6 +21,7 @@ module.exports.name = 'jrrp'
 module.exports.apply = (ctx, config) => {
   t.set('jrrp.description', '今日人品')
   config = new Config(config)
+  let useDatabase = false
 
   let levels = [], desc = {}
 
@@ -53,24 +54,24 @@ module.exports.apply = (ctx, config) => {
     t.set('jrrp.result', config.result)
   }
 
-  ctx.on('connect', () => {
-    if (!ctx.database) config.useDatabase = false
+  ctx.on('service', name => {
+    if (name == 'database' && config.useDatabase && ctx.database) useDatabase = true
   })
 
   ctx.command('jrrp', t('jrrp.description'))
     .userFields(['name'])
     .action(({ session }) => {
       let name
-      if (config.useDatabase) name = session.user.name
+      if (useDatabase) name = session.user.name
       if (!name) name = session.author.nickname
       if (!name) name = session.author.username
 
-      let luck = createHash('sha256')
+      const luck = createHash('sha256')
       luck.update(session.userId)
       luck.update((new Date().getTime() / (1000 * 60 * 60 * 24)).toFixed(0))
       luck.update('42')
 
-      let luckValue = parseInt(luck.digest('hex'), 16) % 101
+      const luckValue = parseInt(luck.digest('hex'), 16) % 101
 
       if (config.levels) {
         let descKey = 0
@@ -78,7 +79,7 @@ module.exports.apply = (ctx, config) => {
           if (luckValue >= level) descKey = level
           else break
         }
-        let luckText = desc[descKey]
+        const luckText = desc[descKey]
 
         return t('jrrp.result', name, luckValue, luckText)
       } else {
