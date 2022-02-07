@@ -3,7 +3,7 @@
 [![npm](https://img.shields.io/npm/v/koishi-plugin-jrrp?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-jrrp)
 [![npm-download](https://img.shields.io/npm/dw/koishi-plugin-jrrp?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-jrrp)
 
-一个用于 **[Koishi v3](https://github.com/koishijs/koishi)** 的查看今日人品的插件。
+一个用于 **[Koishi v4](https://github.com/koishijs/koishi)** 的查看今日人品的插件。
 
 ## 安装方法
 
@@ -11,7 +11,7 @@
 npm i koishi-plugin-jrrp
 ```
 
-然后参照 [安装插件](https://koishi.js.org/guide/context.html#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6) 继续安装。
+然后在配置文件或入口文件中将插件添加至你的机器人中。
 
 ## 使用方法
 
