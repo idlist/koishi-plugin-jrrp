@@ -40,7 +40,7 @@ module.exports.apply = (ctx, config) => {
         '60': '太阳当头照，花儿对你笑。',
         '40': '还行，还行。',
         '20': '多扶一扶老奶奶吧。',
-        '0': '推荐闷头睡大觉。'
+        '0': '推荐闷头睡大觉。',
       }
       levels = Object.keys(desc).map(level => parseInt(level))
     }
