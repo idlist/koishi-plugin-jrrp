@@ -1,6 +1,6 @@
 import { Context } from 'koishi'
 
-export interface ConfigObject {
+export interface Config {
   /**
    * 是否使用数据库。数据库仅用来获取储存在其中的昵称。
    *
@@ -29,4 +29,4 @@ export interface ConfigObject {
   levelDescriptions?: Record<number | string, string>
 }
 
-export declare const apply: (ctx: Context, config: ConfigObject) => void
+export declare const apply: (ctx: Context, config: Config) => void
