@@ -1,63 +1,56 @@
-const { t } = require('koishi')
 const { createHash } = require('crypto')
-
-class Config {
-  constructor(config) {
-    config = { ...config }
-
-    this.useDatabase = config.useDatabase ?? true
-    this.levels = config.levels ?? true
-    this.levelDescriptions = (this.levels && config.levelDescriptions) ?? config.levelDescriptions
-    this.result = config.result ?? undefined
-  }
-}
 
 /**
  * @param {import('koishi').Context} ctx
  * @param {import('../index').Config} config
  */
 module.exports = (ctx, config) => {
-
-  t.set('jrrp.description', '今日人品')
-  config = new Config(config)
   let useDatabase = false
 
-  let levels = [], desc = {}
-
-  if (config.levels) {
-    t.set('jrrp.result', '{0} 的今日人品是：{1}。{2}')
-
-    if (config.levelDescriptions) {
-      for (const level in config.levelDescriptions) {
-        desc[level] = config.levelDescriptions[level]
-        levels.push(parseInt(level))
-      }
-    } else {
-      desc = {
-        '100': '买彩票可能会中大奖哦！',
-        '80': '出门可能捡到 1 块钱。',
-        '60': '太阳当头照，花儿对你笑。',
-        '40': '还行，还行。',
-        '20': '多扶一扶老奶奶吧。',
-        '0': '推荐闷头睡大觉。',
-      }
-      levels = Object.keys(desc).map(level => parseInt(level))
-    }
-
-    levels = levels.sort((a, b) => a - b)
-  } else {
-    t.set('jrrp.result', '{0} 的今日人品是：{1}')
-  }
-
-  if (config.result) {
-    t.set('jrrp.result', config.result)
-  }
-
   ctx.on('service', name => {
-    if (name == 'database' && config.useDatabase && ctx.database) useDatabase = true
+    if (name == 'database' && config.useDatabase && ctx.database) {
+      useDatabase = true
+    }
   })
 
-  ctx.command('jrrp', t('jrrp.description'))
+  /** @type { number[] } */
+  let levels = []
+
+  /** @type { number[] } */
+  let jackpots = []
+
+  /** @type { Record<string, string> } */
+  const levelComments = {}
+
+  /** @type { Record<string, string> } */
+  const jackpotComments = {}
+
+  const hasCustumLevelComments = Object.keys(config.levels).length
+  const hasCustomJackpotComments = Object.keys(config.jackpots).length
+
+  if (config.comment) {
+    if (hasCustumLevelComments) {
+      for (const level in config.levels) {
+        levelComments[level] = config.levels[level]
+        levels.push(typeof level == 'number' ? level : parseInt(level))
+      }
+    } else {
+      levels = [0, 20, 40, 60, 80]
+    }
+
+    levels = levels.sort()
+
+    if (hasCustomJackpotComments) {
+      for (const number in config.jackpots) {
+        jackpotComments[number] = config.jackpots[number]
+        jackpots.push(typeof number == 'number' ? number : parseInt(number))
+      }
+    } else {
+      jackpots = [0, 42, 77, 100]
+    }
+  }
+
+  ctx.command('jrrp')
     .userFields(['name'])
     .action(({ session }) => {
       let name
@@ -72,17 +65,36 @@ module.exports = (ctx, config) => {
 
       const luckValue = parseInt(luck.digest('hex'), 16) % 101
 
-      if (config.levels) {
-        let descKey = 0
-        for (const level of levels) {
-          if (luckValue >= level) descKey = level
-          else break
+      const renderResult = comment => {
+        if (config.result) {
+          return ctx.i18n.render(config.result, [name, luckValue, comment])
+        } else {
+          return session.text('jrrp.result', [name, luckValue, comment])
         }
-        const luckText = desc[descKey]
+      }
 
-        return t('jrrp.result', name, luckValue, luckText)
+      if (config.comment) {
+        let comment
+
+        const jackpotIndex = jackpots.indexOf(luckValue)
+        if (jackpotIndex != -1) {
+          if (hasCustomJackpotComments) {
+            comment = jackpotComments[jackpotIndex]
+          } else {
+            comment = session.text(`jrrp.default-jackpot-${jackpotIndex}`)
+          }
+        } else {
+          const index = levels.find(v => luckValue > v)
+          if (hasCustumLevelComments) {
+            comment = levelComments[index]
+          } else {
+            comment = session.text(`jrrp.default-level-${index}`)
+          }
+        }
+
+        return renderResult(comment)
       } else {
-        return t('jrrp.result', name, luckValue)
+        return renderResult('')
       }
     })
 }

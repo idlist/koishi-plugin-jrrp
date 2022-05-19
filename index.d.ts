@@ -16,17 +16,23 @@ export interface Config {
    */
   result?: string
   /**
-   * 是否启用对结果的评价。
+   * 是否对人品值进行附加评价。
    *
    * @default true
    */
-  levels?: boolean
+  comment?: boolean
   /**
    * 自定义评价语句。详情请查看 https://github.com/idlist/koishi-plugin-jrrp 。
    *
    * @default undefined
    */
-  levelDescriptions?: Record<number | string, string>
+  levels?: Record<number | string, string>
+  /**
+   * 自定义对特殊分值的评价语句。详情请查看 https://github.com/idlist/koishi-plugin-jrrp 。
+   *
+   * @default undefined
+   */
+  jackpots?: Record<number | string, string>
 }
 
 export declare const apply: (ctx: Context, config: Config) => void
