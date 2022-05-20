@@ -8,6 +8,14 @@
     "koishi.js",
     "koishi"
   ],
+  "main": "index.js",
+  "typings": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "src",
+    "locales"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/idlist/koishi-plugin-jrrp.git"
@@ -16,7 +24,6 @@
     "url": "https://github.com/idlist/koishi-plugin-jrrp/issues"
   },
   "homepage": "https://github.com/idlist/koishi-plugin-jrrp#readme",
-  "main": "index.js",
   "scripts": {},
   "dependencies": {
     "koishi": "^4.0.0"

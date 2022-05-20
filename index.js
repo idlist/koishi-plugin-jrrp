@@ -8,7 +8,7 @@ module.exports.schema = S.object({
     .description('是否使用数据库。数据库仅用来获取储存在其中的昵称。当没有数据库时，此项将被强制设为 `false`。'),
   result: S.string()
     .description('自定义结果语句。详情请查看 [README](https://github.com/idlist/koishi-plugin-jrrp)。'),
-  comments: S.boolean().default(true)
+  comment: S.boolean().default(true)
     .description('是否对人品值进行附加评价。'),
   levels: S.dict(S.string(), S.string())
     .description('自定义评价语句。详情请查看 [README](https://github.com/idlist/koishi-plugin-jrrp)。'),

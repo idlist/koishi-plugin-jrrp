@@ -13,16 +13,16 @@ module.exports = (ctx, config) => {
     }
   })
 
-  /** @type { number[] } */
+  /** @type {number[]} */
   let levels = []
 
-  /** @type { number[] } */
+  /** @type {number[]} */
   let jackpots = []
 
-  /** @type { Record<string, string> } */
+  /** @type {Record<string, string>} */
   const levelComments = {}
 
-  /** @type { Record<string, string> } */
+  /** @type {Record<string, string>} */
   const jackpotComments = {}
 
   const hasCustumLevelComments = Object.keys(config.levels).length
@@ -53,6 +53,7 @@ module.exports = (ctx, config) => {
   ctx.command('jrrp')
     .userFields(['name'])
     .action(({ session }) => {
+      /** @type {string} */
       let name
       if (useDatabase) name = session.user.name
       if (!name) name = session.author.nickname
@@ -74,21 +75,29 @@ module.exports = (ctx, config) => {
       }
 
       if (config.comment) {
+        /** @type {string} */
         let comment
 
         const jackpotIndex = jackpots.indexOf(luckValue)
+
         if (jackpotIndex != -1) {
           if (hasCustomJackpotComments) {
-            comment = jackpotComments[jackpotIndex]
+            comment = jackpotComments[luckValue]
           } else {
-            comment = session.text(`jrrp.default-jackpot-${jackpotIndex}`)
+            comment = session.text(`jrrp.default-jackpot-${luckValue}`)
           }
         } else {
-          const index = levels.find(v => luckValue > v)
+          /** @type {number} */
+          let key
+
+          const keyIndex = levels.findIndex(level => luckValue <= level)
+          if (keyIndex == -1) key = levels[levels.length - 1]
+          else key = levels[keyIndex]
+
           if (hasCustumLevelComments) {
-            comment = levelComments[index]
+            comment = levelComments[key]
           } else {
-            comment = session.text(`jrrp.default-level-${index}`)
+            comment = session.text(`jrrp.default-level-${key}`)
           }
         }
 
