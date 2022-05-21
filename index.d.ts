@@ -32,7 +32,7 @@ export interface Config {
    *
    * @default true
    */
-  useJackpot: boolean
+  useJackpot?: boolean
   /**
    * 自定义对特定分值的评价语句。详情请查看 https://github.com/idlist/koishi-plugin-jrrp 。
    *

@@ -5,6 +5,8 @@ const { createHash } = require('crypto')
  * @param {import('../index').Config} config
  */
 module.exports = (ctx, config) => {
+  const log = ctx.logger('jrrp')
+
   /** @type {number[]} */
   let levels = []
 
@@ -12,35 +14,39 @@ module.exports = (ctx, config) => {
   let jackpots = []
 
   /** @type {Record<string, string>} */
-  const levelComments = {}
+  let levelComments = {}
 
   /** @type {Record<string, string>} */
-  const jackpotComments = {}
+  let jackpotComments = {}
 
-  const hasCustumLevelComments = Object.keys(config.levels).length
-  const hasCustomJackpotComments = Object.keys(config.jackpots).length
+  const hasCustumLevels = Object.keys(config.levels).length
+  const hasCustomJackpots = Object.keys(config.jackpots).length
 
   if (config.useLevel) {
-    if (hasCustumLevelComments) {
-      for (const level in config.levels) {
-        levelComments[level] = config.levels[level]
-        levels.push(typeof level == 'number' ? level : parseInt(level))
-      }
+    if (hasCustumLevels) {
+      levelComments = { ...config.levels }
+      levels = Object.keys(config.levels).map(n => parseInt(n))
     } else {
       levels = [0, 20, 40, 60, 80]
     }
 
     levels = levels.sort()
+  }
 
-    if (hasCustomJackpotComments) {
-      for (const number in config.jackpots) {
-        jackpotComments[number] = config.jackpots[number]
-        jackpots.push(typeof number == 'number' ? number : parseInt(number))
-      }
+  log.debug('Level comments prepared:\n', levelComments)
+  log.debug(`Levels prepared: ${levels}`)
+
+  if (config.useJackpot) {
+    if (hasCustomJackpots) {
+      jackpotComments = { ...config.jackpots }
+      jackpots = Object.keys(config.jackpots).map(n => parseInt(n))
     } else {
       jackpots = [0, 42, 77, 100]
     }
   }
+
+  log.debug('Jackpots comments prepared:\n', jackpotComments)
+  log.debug(`Levels prepared: ${levels}`)
 
   ctx.command('jrrp')
     .userFields(['name'])
@@ -57,6 +63,7 @@ module.exports = (ctx, config) => {
       luck.update('42')
 
       const luckValue = parseInt(luck.digest('hex'), 16) % 101
+      log.debug('Luck value:', luckValue)
 
       const renderResult = comment => {
         if (config.result) {
@@ -68,27 +75,31 @@ module.exports = (ctx, config) => {
 
       let comment = ''
 
-      const jackpotIndex = jackpots.indexOf(luckValue)
+      if (config.useJackpot) {
+        const jackpotIndex = jackpots.indexOf(luckValue)
+        log.debug('Jackpot index:', jackpotIndex)
 
-      if (jackpotIndex != -1) {
-        if (hasCustomJackpotComments) {
-          comment = jackpotComments[luckValue]
-        } else {
-          comment = session.text(`jrrp.default-jackpot-${luckValue}`)
+        if (jackpotIndex != -1) {
+          if (hasCustomJackpots) {
+            comment = jackpotComments[luckValue]
+          } else {
+            comment = session.text(`jrrp.default-jackpot-${luckValue}`)
+          }
         }
       }
-
-
 
       if (!comment) {
         /** @type {number} */
         let key
 
         const keyIndex = levels.findIndex(level => luckValue <= level)
-        if (keyIndex == -1) key = levels[levels.length - 1]
-        else key = levels[keyIndex]
+        log.debug('Level index:', keyIndex)
 
-        if (hasCustumLevelComments) {
+        if (keyIndex == -1) key = levels[levels.length - 1]
+        else key = levels[keyIndex - 1]
+        log.debug('Level key:', key)
+
+        if (hasCustumLevels) {
           comment = levelComments[key]
         } else {
           comment = session.text(`jrrp.default-level-${key}`)
