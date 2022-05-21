@@ -5,14 +5,6 @@ const { createHash } = require('crypto')
  * @param {import('../index').Config} config
  */
 module.exports = (ctx, config) => {
-  let useDatabase = false
-
-  ctx.on('service', name => {
-    if (name == 'database' && config.useDatabase && ctx.database) {
-      useDatabase = true
-    }
-  })
-
   /** @type {number[]} */
   let levels = []
 
@@ -28,7 +20,7 @@ module.exports = (ctx, config) => {
   const hasCustumLevelComments = Object.keys(config.levels).length
   const hasCustomJackpotComments = Object.keys(config.jackpots).length
 
-  if (config.comment) {
+  if (config.useLevel) {
     if (hasCustumLevelComments) {
       for (const level in config.levels) {
         levelComments[level] = config.levels[level]
@@ -55,7 +47,7 @@ module.exports = (ctx, config) => {
     .action(({ session }) => {
       /** @type {string} */
       let name
-      if (useDatabase) name = session.user.name
+      if (ctx.database) name = session.user.name
       if (!name) name = session.author.nickname
       if (!name) name = session.author.username
 
@@ -74,36 +66,35 @@ module.exports = (ctx, config) => {
         }
       }
 
-      if (config.comment) {
-        /** @type {string} */
-        let comment
+      let comment = ''
 
-        const jackpotIndex = jackpots.indexOf(luckValue)
+      const jackpotIndex = jackpots.indexOf(luckValue)
 
-        if (jackpotIndex != -1) {
-          if (hasCustomJackpotComments) {
-            comment = jackpotComments[luckValue]
-          } else {
-            comment = session.text(`jrrp.default-jackpot-${luckValue}`)
-          }
+      if (jackpotIndex != -1) {
+        if (hasCustomJackpotComments) {
+          comment = jackpotComments[luckValue]
         } else {
-          /** @type {number} */
-          let key
-
-          const keyIndex = levels.findIndex(level => luckValue <= level)
-          if (keyIndex == -1) key = levels[levels.length - 1]
-          else key = levels[keyIndex]
-
-          if (hasCustumLevelComments) {
-            comment = levelComments[key]
-          } else {
-            comment = session.text(`jrrp.default-level-${key}`)
-          }
+          comment = session.text(`jrrp.default-jackpot-${luckValue}`)
         }
-
-        return renderResult(comment)
-      } else {
-        return renderResult('')
       }
+
+
+
+      if (!comment) {
+        /** @type {number} */
+        let key
+
+        const keyIndex = levels.findIndex(level => luckValue <= level)
+        if (keyIndex == -1) key = levels[levels.length - 1]
+        else key = levels[keyIndex]
+
+        if (hasCustumLevelComments) {
+          comment = levelComments[key]
+        } else {
+          comment = session.text(`jrrp.default-level-${key}`)
+        }
+      }
+
+      return renderResult(comment)
     })
 }

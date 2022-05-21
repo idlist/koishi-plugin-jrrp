@@ -20,17 +20,23 @@ export interface Config {
    *
    * @default true
    */
-  comment?: boolean
+  useLevel?: boolean
   /**
    * 自定义评价语句。详情请查看 https://github.com/idlist/koishi-plugin-jrrp 。
    *
-   * @default undefined
+   * @default {}
    */
   levels?: Record<number | string, string>
   /**
-   * 自定义对特殊分值的评价语句。详情请查看 https://github.com/idlist/koishi-plugin-jrrp 。
+   * 是否对特定分值进行特殊评价。
    *
-   * @default undefined
+   * @default true
+   */
+  useJackpot: boolean
+  /**
+   * 自定义对特定分值的评价语句。详情请查看 https://github.com/idlist/koishi-plugin-jrrp 。
+   *
+   * @default {}
    */
   jackpots?: Record<number | string, string>
 }
