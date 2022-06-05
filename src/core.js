@@ -46,7 +46,7 @@ module.exports = (ctx, config) => {
   }
 
   log.debug('Jackpots comments prepared:\n', jackpotComments)
-  log.debug(`Levels prepared: ${levels}`)
+  log.debug(`Jackpots prepared: ${jackpots}`)
 
   ctx.command('jrrp')
     .userFields(['name'])
