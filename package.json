@@ -36,9 +36,6 @@
     "jrrp",
     "fortune"
   ],
-  "dependencies": {
-    "koishi": "^4.0.0"
-  },
   "peerDependencies": {
     "koishi": "^4.0.0"
   }
