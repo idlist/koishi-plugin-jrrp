@@ -25,7 +25,21 @@
   },
   "homepage": "https://github.com/idlist/koishi-plugin-jrrp#readme",
   "scripts": {},
+  "koishi": {
+    "description": {
+      "zh": "今日人品插件"
+    }
+  },
+  "keywords": [
+    "koishi",
+    "plugin",
+    "jrrp",
+    "fortune"
+  ],
   "dependencies": {
+    "koishi": "^4.0.0"
+  },
+  "peerDependencies": {
     "koishi": "^4.0.0"
   }
 }
