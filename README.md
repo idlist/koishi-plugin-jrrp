@@ -78,9 +78,9 @@ jrrp
 <details>
 <summary><b>v1.0</b> （用于 Koishi v4）</summary>
 
-### v1.0.0
+### v1.1.1
 
-- 对 v4 做了一个很简陋的适配。
+- 在 `package.json` 中加入了 `koishi` 字段，现在应该可以在插件市场搜索到了。
 
 ### v1.1.0
 
@@ -110,6 +110,10 @@ jrrp
 ```
 
 - **[Breaking]** 相应地，关闭评价需要同时关闭 `useLevel` 和 `useJackpot` 两个项了。
+
+### v1.0.0
+
+- 对 v4 做了一个很简陋的适配。
 
 </details>
 
